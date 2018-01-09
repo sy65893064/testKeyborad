@@ -1,9 +1,12 @@
 // KeyboardTest.cpp : 定义控制台应用程序的入口点。
 //
 
-#include <iostream>
 #include <tchar.h>
 #include <windows.h>
+
+#include <iostream>
+#include <string>
+
 #include "SDKDLL.h"
 
 using namespace std;
@@ -55,15 +58,61 @@ void printInfo()
     }
 
     //获取当前时间
-    WCHAR* strTime = NULL;
-    strTime = GetNowTime();
+    wstring strTime(GetNowTime());
     wcout << _T("当前时间：") << strTime << endl;
+    wstring strYear = strTime.substr(0, 4);
+    wstring strMon = strTime.substr(5, 2);
+    wstring strDay = strTime.substr(8, 2);
+    wcout << strYear << _T("年") << strMon << _T("月") << strDay << _T("日") << endl;
+    wstring strHour = strTime.substr(11, 2);
+    wstring strMin = strTime.substr(14, 2);
+    wstring strSec = strTime.substr(17, 2);
+    wcout << strHour << _T("时") << strMin << _T("分") << strSec << _T("秒") << endl;
+}
+
+//设置预设键盘效果
+void ChangeEffect()
+{
+    SwitchLedEffect(EFF_FULL_ON);
+}
+
+//设置个性化LED效果
+void ChangeLED()
+{
+    COLOR_MATRIX colorMatrix;
+    for (int i = 0; i < MAX_LED_ROW; ++i)
+    {
+        for (int j = 0; j < MAX_LED_COLUMN; ++j)
+        {
+            if (15 <= j)
+            {
+                colorMatrix.KeyColor[i][j] = KEY_COLOR(0, 0, 0);
+            }
+            else
+            {
+                colorMatrix.KeyColor[i][j] = KEY_COLOR(255, 255, 255);
+            }
+        }
+    }
+    SetAllLedColor(colorMatrix);
+}
+
+//设置LED效果
+void setLEDEffect()
+{
+    EnableLedControl(true);
+
+    ChangeLED();
+    Sleep(5000);
+
+    EnableLedControl(false);
 }
 
 int main()
 {
     initKeyboardTest();
     printInfo();
+    setLEDEffect();
 
     system("pause");
     return 0;

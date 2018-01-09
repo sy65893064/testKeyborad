@@ -70,10 +70,49 @@ void printInfo()
     wcout << strHour << _T("时") << strMin << _T("分") << strSec << _T("秒") << endl;
 }
 
+//设置预设键盘效果
+void ChangeEffect()
+{
+    SwitchLedEffect(EFF_FULL_ON);
+}
+
+//设置个性化LED效果
+void ChangeLED()
+{
+    COLOR_MATRIX colorMatrix;
+    for (int i = 0; i < MAX_LED_ROW; ++i)
+    {
+        for (int j = 0; j < MAX_LED_COLUMN; ++j)
+        {
+            if (15 <= j)
+            {
+                colorMatrix.KeyColor[i][j] = KEY_COLOR(0, 0, 0);
+            }
+            else
+            {
+                colorMatrix.KeyColor[i][j] = KEY_COLOR(255, 255, 255);
+            }
+        }
+    }
+    SetAllLedColor(colorMatrix);
+}
+
+//设置LED效果
+void setLEDEffect()
+{
+    EnableLedControl(true);
+
+    ChangeLED();
+    Sleep(5000);
+
+    EnableLedControl(false);
+}
+
 int main()
 {
     initKeyboardTest();
     printInfo();
+    setLEDEffect();
 
     system("pause");
     return 0;

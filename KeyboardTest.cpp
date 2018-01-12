@@ -18,7 +18,7 @@ void initKeyboardTest()
     wcout.imbue(locale(locale(), "", LC_CTYPE));
 
     //设置操作键盘
-    SetControlDevice(DEV_MKeys_L_White);
+    SetControlDevice(DEVICE_INDEX::DEV_MKeys_L_White);
 }
 
 // 打印键盘信息
@@ -28,14 +28,14 @@ void printInfo()
     wcout << _T("DLL版本：") << GetCM_SDK_DllVer() << endl;
 
     //监测键盘是否插入
-    WCHAR* isKeyboardPlug;
+    wstring isKeyboardPlug;
     if (IsDevicePlug() == true)
     {
-        isKeyboardPlug = L"true";
+        isKeyboardPlug = _T("true");
     }
     else
     {
-        isKeyboardPlug = L"false";
+        isKeyboardPlug = _T("false");
     }
     wcout << _T("键盘是否插入：") << isKeyboardPlug << endl;
 
@@ -84,7 +84,7 @@ void ChangeLED()
     {
         for (int j = 0; j < MAX_LED_COLUMN; ++j)
         {
-            if (15 <= j)
+            if (1 == i && (j >= 1 && j <= 10))
             {
                 colorMatrix.KeyColor[i][j] = KEY_COLOR(0, 0, 0);
             }
@@ -95,6 +95,13 @@ void ChangeLED()
         }
     }
     SetAllLedColor(colorMatrix);
+
+    for (int i = 1; i <= 10; ++i)
+    {
+        Sleep(200);
+        colorMatrix.KeyColor[1][i] = KEY_COLOR(255, 255, 255);
+        SetAllLedColor(colorMatrix);
+    }
 }
 
 //设置LED效果
@@ -103,7 +110,7 @@ void setLEDEffect()
     EnableLedControl(true);
 
     ChangeLED();
-    Sleep(5000);
+    Sleep(1000);
 
     EnableLedControl(false);
 }
@@ -114,6 +121,7 @@ int main()
     printInfo();
     setLEDEffect();
 
+    wcout << endl;
     system("pause");
     return 0;
 }
